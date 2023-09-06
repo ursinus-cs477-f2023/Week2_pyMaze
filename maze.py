@@ -28,5 +28,45 @@ class Maze:
         plt.scatter(self.end[1], self.end[0], c='C3')
 
     def solve(self):
-        pass
-        ## TODO: Fill this in in class
+        # Tuples of (location on frontier, location that we expanded to get this)
+        frontier = [{"state":self.start, "came_from":None}]
+        
+        # Keep an additional set for the state tuples on the frontier so that we
+        # can quickly look up what's on the frontier
+        frontier_set = set([self.start])
+
+        finished = False
+        M = self.maze.shape[0] # Number of rows
+        N = self.maze.shape[1] # Number of cols
+        visited = set([]) # Set of visited nodes
+        while not finished and len(frontier) > 0:
+            # Breadth-first search
+            # Remove what's at the front of my frontier list
+            state_info = frontier.pop(0) # Take out first element
+            state = state_info["state"]
+            visited.add(state)
+            if state == self.end:
+                finished = True
+            else:
+                # Expand node; look at neighbors
+                (i, j) = state
+                for (di, dj) in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+                    # For each neighbor
+                    i2 = i + di
+                    j2 = j + dj
+                    if i2 >= 0 and i2 < M and j2 >= 0 and j2 < N:
+                        if self.maze[i2, j2] > 0: # White cell (open)
+                            # If it exists in the maze
+                            if not (i2, j2) in visited and not (i2, j2) in frontier_set:
+                                frontier.append({"state":(i2, j2), "came_from":state_info})
+                                frontier_set.add((i2, j2))
+
+        ## Backtrace solution
+        solution = [self.end]
+        node = state_info
+        while node: # As long as we actually came from somewhere
+            solution.append(node["state"])
+            node = node["came_from"]
+        solution.reverse()
+        return solution
+            
