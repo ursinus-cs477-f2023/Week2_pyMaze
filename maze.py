@@ -44,6 +44,8 @@ class Maze:
             # Remove what's at the front of my frontier list
             state_info = frontier.pop(0) # Take out first element
             state = state_info["state"]
+            # Also remove from fast frontier lookup structure
+            frontier_set.remove(state) 
             visited.add(state)
             if state == self.end:
                 finished = True
