@@ -64,7 +64,7 @@ class Maze:
                                 frontier_set.add((i2, j2))
 
         ## Backtrace solution
-        solution = [self.end]
+        solution = []
         node = state_info
         while node: # As long as we actually came from somewhere
             solution.append(node["state"])
