@@ -28,6 +28,7 @@ class Maze:
         plt.scatter(self.end[1], self.end[0], c='C3')
 
     def solve(self):
+        solution = []
         # Tuples of (location on frontier, location that we expanded to get this)
         frontier = [{"state":self.start, "came_from":None}]
         
@@ -49,6 +50,13 @@ class Maze:
             visited.add(state)
             if state == self.end:
                 finished = True
+                ## Backtrace solution
+                solution = []
+                node = state_info
+                while node: # As long as we actually came from somewhere
+                    solution.append(node["state"])
+                    node = node["came_from"]
+                solution.reverse()
             else:
                 # Expand node; look at neighbors
                 (i, j) = state
@@ -62,13 +70,5 @@ class Maze:
                             if not (i2, j2) in visited and not (i2, j2) in frontier_set:
                                 frontier.append({"state":(i2, j2), "came_from":state_info})
                                 frontier_set.add((i2, j2))
-
-        ## Backtrace solution
-        solution = []
-        node = state_info
-        while node: # As long as we actually came from somewhere
-            solution.append(node["state"])
-            node = node["came_from"]
-        solution.reverse()
         return solution
             
